@@ -134,5 +134,7 @@ def main():
     tab_conversas(tab1)
     tab_configuracoes(tab2)
     print('dsf')
+    print('dsf')
+
 if __name__ == '__main__':
     main()
