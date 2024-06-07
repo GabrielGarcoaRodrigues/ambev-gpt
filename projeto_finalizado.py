@@ -88,7 +88,7 @@ def pagina_principal():
             st.error('Adicione uma chave de API na aba de configurações')
         else:
             # Inclui o conteúdo do arquivo na mensagem
-            user_message = prompt
+            user_message = prompt + file_content
             if file_content:
                 user_message += "\n\nConteúdo do arquivo:\n" + file_content
             
