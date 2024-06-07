@@ -89,7 +89,6 @@ def pagina_principal():
             salvar_mensagens(mensagens)
 
     # Seção de upload de arquivos sempre na parte inferior
-    st.subheader("Envio de Arquivos")
     uploaded_file = st.file_uploader("Escolha um arquivo", type=["txt", "pdf", "docx", "xlsx"])
     
     if uploaded_file is not None:
