@@ -1,5 +1,18 @@
 import streamlit as st
 import pandas as pd
+import subprocess
+import sys
+
+# Função para instalar pacotes
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+# Tenta importar o pacote, se falhar, instala e tenta novamente
+try:
+    import openpyxl
+except ImportError:
+    install("openpyxl")
+    import openpyxl
 
 from utils_openai import retorna_resposta_modelo
 from utils_files import *
@@ -96,32 +109,35 @@ def pagina_principal():
             file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type}
             st.write(file_details)
             
-            # Converte o arquivo Excel em um DataFrame
-            df = pd.read_excel(uploaded_file)
-            st.write(df)
-            
-            # Converte o DataFrame em texto para enviar para a API
-            df_text = df.to_string()
-            st.session_state['mensagens'].append({'role': 'user', 'content': df_text})
-            nova_mensagem = {'role': 'user', 'content': df_text}
-            chat = st.chat_message(nova_mensagem['role'])
-            chat.markdown(nova_mensagem['content'])
-            mensagens.append(nova_mensagem)
-            
-            # Envia a mensagem para a API
-            chat = st.chat_message('assistant')
-            placeholder = chat.empty()
-            placeholder.markdown("▌")
-            resposta_completa = ''
-            respostas = retorna_resposta_modelo(mensagens, st.session_state['api_key'], modelo=st.session_state['modelo'], stream=True)
-            for resposta in respostas:
-                resposta_completa += resposta.choices[0].delta.get('content', '')
-                placeholder.markdown(resposta_completa + "▌")
-            placeholder.markdown(resposta_completa)
-            nova_mensagem = {'role': 'assistant', 'content': resposta_completa}
-            mensagens.append(nova_mensagem)
-            st.session_state['mensagens'] = mensagens
-            salvar_mensagens(mensagens)
+            try:
+                # Converte o arquivo Excel em um DataFrame
+                df = pd.read_excel(uploaded_file)
+                st.write(df)
+                
+                # Converte o DataFrame em texto para enviar para a API
+                df_text = df.to_string()
+                st.session_state['mensagens'].append({'role': 'user', 'content': df_text})
+                nova_mensagem = {'role': 'user', 'content': df_text}
+                chat = st.chat_message(nova_mensagem['role'])
+                chat.markdown(nova_mensagem['content'])
+                mensagens.append(nova_mensagem)
+                
+                # Envia a mensagem para a API
+                chat = st.chat_message('assistant')
+                placeholder = chat.empty()
+                placeholder.markdown("▌")
+                resposta_completa = ''
+                respostas = retorna_resposta_modelo(mensagens, st.session_state['api_key'], modelo=st.session_state['modelo'], stream=True)
+                for resposta in respostas:
+                    resposta_completa += resposta.choices[0].delta.get('content', '')
+                    placeholder.markdown(resposta_completa + "▌")
+                placeholder.markdown(resposta_completa)
+                nova_mensagem = {'role': 'assistant', 'content': resposta_completa}
+                mensagens.append(nova_mensagem)
+                st.session_state['mensagens'] = mensagens
+                salvar_mensagens(mensagens)
+            except Exception as e:
+                st.error(f"Erro ao processar o arquivo: {e}")
 
 # MAIN ==================================================
 def main():
