@@ -5,7 +5,7 @@ from utils_openai import retorna_resposta_modelo
 from utils_files import *
 
 # Configurações fixas
-API_KEY = "sua_chave_de_api_aqui"  # Substitua pela sua chave de API
+API_KEY = "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"  # Substitua pela sua chave de API
 MODELO = 'gpt-4'
 
 # INICIALIZAÇÃO ==================================================
