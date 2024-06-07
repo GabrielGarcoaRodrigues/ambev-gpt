@@ -17,7 +17,6 @@ def inicializacao():
 
 # TABS ==================================================
 def tab_conversas(tab):
-
     tab.button('➕ Nova conversa',
                 on_click=seleciona_conversa,
                 args=('', ),
@@ -102,6 +101,27 @@ def pagina_principal():
         elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
             df = pd.read_excel(uploaded_file)
             st.write(df)
+            # Converte o DataFrame em texto para enviar para a API
+            df_text = df.to_string()
+            st.session_state['mensagens'].append({'role': 'user', 'content': df_text})
+            nova_mensagem = {'role': 'user', 'content': df_text}
+            chat = st.chat_message(nova_mensagem['role'])
+            chat.markdown(nova_mensagem['content'])
+            mensagens.append(nova_mensagem)
+            # Envia a mensagem para a API
+            chat = st.chat_message('assistant')
+            placeholder = chat.empty()
+            placeholder.markdown("▌")
+            resposta_completa = ''
+            respostas = retorna_resposta_modelo(mensagens, st.session_state['api_key'], modelo=st.session_state['modelo'], stream=True)
+            for resposta in respostas:
+                resposta_completa += resposta.choices[0].delta.get('content', '')
+                placeholder.markdown(resposta_completa + "▌")
+            placeholder.markdown(resposta_completa)
+            nova_mensagem = {'role': 'assistant', 'content': resposta_completa}
+            mensagens.append(nova_mensagem)
+            st.session_state['mensagens'] = mensagens
+            salvar_mensagens(mensagens)
         else:
             st.write("Arquivo enviado, mas o tipo não é suportado para visualização")
 
@@ -113,7 +133,5 @@ def main():
     tab_conversas(tab1)
     tab_configuracoes(tab2)
 
-
 if __name__ == '__main__':
     main()
-
