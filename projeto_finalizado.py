@@ -1,18 +1,5 @@
 import streamlit as st
 import pandas as pd
-import subprocess
-import sys
-
-# Função para instalar pacotes
-def install(package):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
-# Tenta importar o pacote, se falhar, instala e tenta novamente
-try:
-    import openpyxl
-except ImportError:
-    install("openpyxl")
-    import openpyxl
 
 from utils_openai import retorna_resposta_modelo
 from utils_files import *
