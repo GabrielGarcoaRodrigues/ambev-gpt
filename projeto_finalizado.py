@@ -18,9 +18,9 @@ def inicializacao():
 # TABS ==================================================
 def tab_conversas(tab):
     tab.button('➕ Nova conversa',
-                on_click=seleciona_conversa,
-                args=('', ),
-                use_container_width=True)
+               on_click=seleciona_conversa,
+               args=('', ),
+               use_container_width=True)
     tab.markdown('')
     conversas = listar_conversas()
     for nome_arquivo in conversas:
@@ -28,10 +28,10 @@ def tab_conversas(tab):
         if len(nome_mensagem) == 30:
             nome_mensagem += '...'
         tab.button(nome_mensagem,
-            on_click=seleciona_conversa,
-            args=(nome_arquivo, ),
-            disabled=nome_arquivo==st.session_state['conversa_atual'],
-            use_container_width=True)
+                   on_click=seleciona_conversa,
+                   args=(nome_arquivo, ),
+                   disabled=nome_arquivo == st.session_state['conversa_atual'],
+                   use_container_width=True)
 
 def seleciona_conversa(nome_arquivo):
     if nome_arquivo == '':
@@ -86,8 +86,43 @@ def pagina_principal():
 
             st.session_state['mensagens'] = mensagens
             salvar_mensagens(mensagens)
-
     
+    # Seção de upload de arquivos sempre na parte inferior
+    st.subheader("Envio de Arquivos")
+    uploaded_file = st.file_uploader("Escolha um arquivo Excel", type=["xlsx"])
+    if st.button('Processar Arquivo Excel'):
+        if uploaded_file is not None:
+            # Lê o conteúdo do arquivo
+            file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type}
+            st.write(file_details)
+            
+            # Converte o arquivo Excel em um DataFrame
+            df = pd.read_excel(uploaded_file)
+            st.write(df)
+            
+            # Converte o DataFrame em texto para enviar para a API
+            df_text = df.to_string()
+            st.session_state['mensagens'].append({'role': 'user', 'content': df_text})
+            nova_mensagem = {'role': 'user', 'content': df_text}
+            chat = st.chat_message(nova_mensagem['role'])
+            chat.markdown(nova_mensagem['content'])
+            mensagens.append(nova_mensagem)
+            
+            # Envia a mensagem para a API
+            chat = st.chat_message('assistant')
+            placeholder = chat.empty()
+            placeholder.markdown("▌")
+            resposta_completa = ''
+            respostas = retorna_resposta_modelo(mensagens, st.session_state['api_key'], modelo=st.session_state['modelo'], stream=True)
+            for resposta in respostas:
+                resposta_completa += resposta.choices[0].delta.get('content', '')
+                placeholder.markdown(resposta_completa + "▌")
+            placeholder.markdown(resposta_completa)
+            nova_mensagem = {'role': 'assistant', 'content': resposta_completa}
+            mensagens.append(nova_mensagem)
+            st.session_state['mensagens'] = mensagens
+            salvar_mensagens(mensagens)
+
 # MAIN ==================================================
 def main():
     inicializacao()
