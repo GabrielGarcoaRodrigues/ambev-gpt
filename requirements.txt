@@ -3,3 +3,5 @@ python-dotenv
 ipykernel
 streamlit
 unidecode
+openpyxl
+pandas
