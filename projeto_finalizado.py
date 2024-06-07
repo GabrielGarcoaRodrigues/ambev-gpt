@@ -1,5 +1,18 @@
 import streamlit as st
 import pandas as pd
+import subprocess
+import sys
+
+# Função para instalar pacotes
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+# Tenta importar o pacote, se falhar, instala e tenta novamente
+try:
+    import openpyxl
+except ImportError:
+    install("openpyxl")
+    import openpyxl
 
 from utils_openai import retorna_resposta_modelo
 from utils_files import *
@@ -63,12 +76,36 @@ def pagina_principal():
         chat = st.chat_message(mensagem['role'])
         chat.markdown(mensagem['content'])
     
+    # Seção de upload de arquivos sempre na parte inferior
+    uploaded_file = st.file_uploader("Escolha um arquivo", type=["txt", "pdf", "docx", "xlsx"])
+    
+    file_content = ""
+    if uploaded_file is not None:
+        # Lê o conteúdo do arquivo
+        file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type}
+        st.write(file_details)
+        
+        if uploaded_file.type == "text/plain":
+            file_content = uploaded_file.read().decode("utf-8")
+            st.text(file_content)
+        elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            df = pd.read_excel(uploaded_file)
+            file_content = df.to_string()
+            st.write(df)
+        else:
+            st.write("Arquivo enviado, mas o tipo não é suportado para visualização")
+
     prompt = st.chat_input('Fale com o chat')
-    if prompt:
+    if prompt or file_content:
         if st.session_state['api_key'] == '':
             st.error('Adicione uma chave de API na aba de configurações')
         else:
-            nova_mensagem = {'role': 'user', 'content': prompt}
+            # Inclui o conteúdo do arquivo na mensagem
+            user_message = prompt
+            if file_content:
+                user_message += "\n\nConteúdo do arquivo:\n" + file_content
+            
+            nova_mensagem = {'role': 'user', 'content': user_message}
             chat = st.chat_message(nova_mensagem['role'])
             chat.markdown(nova_mensagem['content'])
             mensagens.append(nova_mensagem)
@@ -88,23 +125,6 @@ def pagina_principal():
             st.session_state['mensagens'] = mensagens
             salvar_mensagens(mensagens)
 
-    # Seção de upload de arquivos sempre na parte inferior
-    uploaded_file = st.file_uploader("Escolha um arquivo", type=["txt", "pdf", "docx", "xlsx"])
-    
-    if uploaded_file is not None:
-        # Lê o conteúdo do arquivo
-        file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type}
-        st.write(file_details)
-        
-        if uploaded_file.type == "text/plain":
-            content = uploaded_file.read().decode("utf-8")
-            st.text(content)
-        elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-            df = pd.read_excel(uploaded_file)
-            st.write(df)
-        else:
-            st.write("Arquivo enviado, mas o tipo não é suportado para visualização")
-
 # MAIN ==================================================
 def main():
     inicializacao()
@@ -116,4 +136,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
