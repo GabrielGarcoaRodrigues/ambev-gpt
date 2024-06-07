@@ -1,12 +1,10 @@
 import streamlit as st
 import pandas as pd
+import openpyxl
 
 from utils_openai import retorna_resposta_modelo
 from utils_files import *
 
-# Configurações fixas
-API_KEY = "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"  # Substitua pela sua chave de API
-MODELO = 'gpt-4'
 
 # INICIALIZAÇÃO ==================================================
 def inicializacao():
@@ -14,24 +12,28 @@ def inicializacao():
         st.session_state.mensagens = []
     if not 'conversa_atual' in st.session_state:
         st.session_state.conversa_atual = ''
+    if not 'modelo' in st.session_state:
+        st.session_state.modelo = 'gpt-4'
+    if not 'api_key' in st.session_state:
+        st.session_state.api_key = le_chave()
 
 # TABS ==================================================
-def tab_conversas():
-    st.sidebar.button('➕ Nova conversa',
-                      on_click=seleciona_conversa,
-                      args=('', ),
-                      use_container_width=True)
-    st.sidebar.markdown('')
+def tab_conversas(tab):
+    tab.button('➕ Nova conversa',
+               on_click=seleciona_conversa,
+               args=('', ),
+               use_container_width=True)
+    tab.markdown('')
     conversas = listar_conversas()
     for nome_arquivo in conversas:
         nome_mensagem = desconverte_nome_mensagem(nome_arquivo).capitalize()
         if len(nome_mensagem) == 30:
             nome_mensagem += '...'
-        st.sidebar.button(nome_mensagem,
-                          on_click=seleciona_conversa,
-                          args=(nome_arquivo, ),
-                          disabled=nome_arquivo == st.session_state['conversa_atual'],
-                          use_container_width=True)
+        tab.button(nome_mensagem,
+                   on_click=seleciona_conversa,
+                   args=(nome_arquivo, ),
+                   disabled=nome_arquivo == st.session_state['conversa_atual'],
+                   use_container_width=True)
 
 def seleciona_conversa(nome_arquivo):
     if nome_arquivo == '':
@@ -41,11 +43,22 @@ def seleciona_conversa(nome_arquivo):
         st.session_state['mensagens'] = mensagem
     st.session_state['conversa_atual'] = nome_arquivo
 
+def tab_configuracoes(tab):
+    modelo_escolhido = tab.selectbox('Selecione o modelo',
+                                     ['gpt-4', 'gpt-3.5-turbo'])
+    st.session_state['modelo'] = modelo_escolhido
+
+    chave = tab.text_input('Adicione sua api key', value=st.session_state['api_key'])
+    if chave != st.session_state['api_key']:
+        st.session_state['api_key'] = chave
+        salva_chave(chave)
+        tab.success('Chave salva com sucesso')
+
 # PÁGINA PRINCIPAL ==================================================
 def pagina_principal():
     mensagens = ler_mensagens(st.session_state['mensagens'])
 
-    st.header('🤖 Ambev Chatbot', divider=True)
+    st.header('🍺 Ambev Chatbot', divider=True)
 
     for mensagem in mensagens:
         chat = st.chat_message(mensagem['role'])
@@ -53,34 +66,36 @@ def pagina_principal():
     
     prompt = st.chat_input('Fale com o chat')
     if prompt:
-        nova_mensagem = {'role': 'user', 'content': prompt}
-        chat = st.chat_message(nova_mensagem['role'])
-        chat.markdown(nova_mensagem['content'])
-        mensagens.append(nova_mensagem)
+        if st.session_state['api_key'] == '':
+            st.error('Adicione uma chave de API na aba de configurações')
+        else:
+            nova_mensagem = {'role': 'user', 'content': prompt}
+            chat = st.chat_message(nova_mensagem['role'])
+            chat.markdown(nova_mensagem['content'])
+            mensagens.append(nova_mensagem)
 
-        chat = st.chat_message('assistant')
-        placeholder = chat.empty()
-        placeholder.markdown("▌")
-        resposta_completa = ''
-        respostas = retorna_resposta_modelo(mensagens, API_KEY, modelo=MODELO, stream=True)
-        for resposta in respostas:
-            resposta_completa += resposta.choices[0].delta.get('content', '')
-            placeholder.markdown(resposta_completa + "▌")
-        placeholder.markdown(resposta_completa)
-        nova_mensagem = {'role': 'assistant', 'content': resposta_completa}
-        mensagens.append(nova_mensagem)
+            chat = st.chat_message('assistant')
+            placeholder = chat.empty()
+            placeholder.markdown("▌")
+            resposta_completa = ''
+            respostas = retorna_resposta_modelo(mensagens, st.session_state['api_key'], modelo=st.session_state['modelo'], stream=True)
+            for resposta in respostas:
+                resposta_completa += resposta.choices[0].delta.get('content', '')
+                placeholder.markdown(resposta_completa + "▌")
+            placeholder.markdown(resposta_completa)
+            nova_mensagem = {'role': 'assistant', 'content': resposta_completa}
+            mensagens.append(nova_mensagem)
 
-        st.session_state['mensagens'] = mensagens
-        salvar_mensagens(mensagens)
+            st.session_state['mensagens'] = mensagens
+            salvar_mensagens(mensagens)
     
     # Seção de upload de arquivos sempre na parte inferior
-    st.subheader("Envio de Arquivos")
     uploaded_file = st.file_uploader("Escolha um arquivo Excel", type=["xlsx"])
     if st.button('Processar Arquivo Excel'):
         if uploaded_file is not None:
             # Lê o conteúdo do arquivo
             file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type}
-            st.write(file_details)
+            # st.write(file_details)
             
             try:
                 # Converte o arquivo Excel em um DataFrame
@@ -100,7 +115,7 @@ def pagina_principal():
                 placeholder = chat.empty()
                 placeholder.markdown("▌")
                 resposta_completa = ''
-                respostas = retorna_resposta_modelo(mensagens, API_KEY, modelo=MODELO, stream=True)
+                respostas = retorna_resposta_modelo(mensagens, st.session_state['api_key'], modelo=st.session_state['modelo'], stream=True)
                 for resposta in respostas:
                     resposta_completa += resposta.choices[0].delta.get('content', '')
                     placeholder.markdown(resposta_completa + "▌")
@@ -116,7 +131,9 @@ def pagina_principal():
 def main():
     inicializacao()
     pagina_principal()
-    tab_conversas()
-
+    tab1, tab2 = st.sidebar.tabs(['Conversas', 'Configurações'])
+    tab_conversas(tab1)
+    tab_configuracoes(tab2)
+    
 if __name__ == '__main__':
     main()
