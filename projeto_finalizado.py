@@ -87,44 +87,7 @@ def pagina_principal():
             st.session_state['mensagens'] = mensagens
             salvar_mensagens(mensagens)
 
-    # Seção de upload de arquivos sempre na parte inferior
-    uploaded_file = st.file_uploader("Escolha um arquivo", type=["txt", "pdf", "docx", "xlsx"])
     
-    if uploaded_file is not None:
-        # Lê o conteúdo do arquivo
-        file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type}
-        st.write(file_details)
-        
-        if uploaded_file.type == "text/plain":
-            content = uploaded_file.read().decode("utf-8")
-            st.text(content)
-        elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-            df = pd.read_excel(uploaded_file)
-            st.write(df)
-            # Converte o DataFrame em texto para enviar para a API
-            df_text = df.to_string()
-            st.session_state['mensagens'].append({'role': 'user', 'content': df_text})
-            nova_mensagem = {'role': 'user', 'content': df_text}
-            chat = st.chat_message(nova_mensagem['role'])
-            chat.markdown(nova_mensagem['content'])
-            mensagens.append(nova_mensagem)
-            # Envia a mensagem para a API
-            chat = st.chat_message('assistant')
-            placeholder = chat.empty()
-            placeholder.markdown("▌")
-            resposta_completa = ''
-            respostas = retorna_resposta_modelo(mensagens, st.session_state['api_key'], modelo=st.session_state['modelo'], stream=True)
-            for resposta in respostas:
-                resposta_completa += resposta.choices[0].delta.get('content', '')
-                placeholder.markdown(resposta_completa + "▌")
-            placeholder.markdown(resposta_completa)
-            nova_mensagem = {'role': 'assistant', 'content': resposta_completa}
-            mensagens.append(nova_mensagem)
-            st.session_state['mensagens'] = mensagens
-            salvar_mensagens(mensagens)
-        else:
-            st.write("Arquivo enviado, mas o tipo não é suportado para visualização")
-
 # MAIN ==================================================
 def main():
     inicializacao()
