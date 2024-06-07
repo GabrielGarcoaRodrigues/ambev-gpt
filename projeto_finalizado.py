@@ -133,6 +133,6 @@ def main():
     tab1, tab2 = st.sidebar.tabs(['Conversas', 'Configurações'])
     tab_conversas(tab1)
     tab_configuracoes(tab2)
-
+    print('dsf')
 if __name__ == '__main__':
     main()
