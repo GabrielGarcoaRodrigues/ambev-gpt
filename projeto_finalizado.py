@@ -16,22 +16,22 @@ def inicializacao():
         st.session_state.conversa_atual = ''
 
 # TABS ==================================================
-def tab_conversas(tab):
-    tab.button('➕ Nova conversa',
-               on_click=seleciona_conversa,
-               args=('', ),
-               use_container_width=True)
-    tab.markdown('')
+def tab_conversas():
+    st.sidebar.button('➕ Nova conversa',
+                      on_click=seleciona_conversa,
+                      args=('', ),
+                      use_container_width=True)
+    st.sidebar.markdown('')
     conversas = listar_conversas()
     for nome_arquivo in conversas:
         nome_mensagem = desconverte_nome_mensagem(nome_arquivo).capitalize()
         if len(nome_mensagem) == 30:
             nome_mensagem += '...'
-        tab.button(nome_mensagem,
-                   on_click=seleciona_conversa,
-                   args=(nome_arquivo, ),
-                   disabled=nome_arquivo == st.session_state['conversa_atual'],
-                   use_container_width=True)
+        st.sidebar.button(nome_mensagem,
+                          on_click=seleciona_conversa,
+                          args=(nome_arquivo, ),
+                          disabled=nome_arquivo == st.session_state['conversa_atual'],
+                          use_container_width=True)
 
 def seleciona_conversa(nome_arquivo):
     if nome_arquivo == '':
@@ -116,8 +116,7 @@ def pagina_principal():
 def main():
     inicializacao()
     pagina_principal()
-    tab1 = st.sidebar.tab('Conversas')
-    tab_conversas(tab1)
+    tab_conversas()
 
 if __name__ == '__main__':
     main()
