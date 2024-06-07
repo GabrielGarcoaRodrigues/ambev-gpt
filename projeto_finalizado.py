@@ -96,14 +96,14 @@ def pagina_principal():
         file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type}
         st.write(file_details)
         
-        if uploaded_file.type == "text/plain":
-            content = uploaded_file.read().decode("utf-8")
-            st.text(content)
-        elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-            df = pd.read_excel(uploaded_file)
-            st.write(df)
-        else:
-            st.write("Arquivo enviado, mas o tipo não é suportado para visualização")
+        # if uploaded_file.type == "text/plain":
+        #     content = uploaded_file.read().decode("utf-8")
+        #     st.text(content)
+        # elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        #     df = pd.read_excel(uploaded_file)
+        #     st.write(df)
+        # else:
+        #     st.write("Arquivo enviado, mas o tipo não é suportado para visualização")
 
 # MAIN ==================================================
 def main():
