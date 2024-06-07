@@ -1,16 +1,14 @@
 import openai
 
-# API OPENAI ================================================
-def retorna_resposta_modelo(mensagens,
-                            openai_key,
-                            modelo='gpt-4',
-                            temperatura=0,
-                            stream=False):
-    openai.api_key = openai_key
-    response = openai.ChatCompletion.create(
-        model=modelo,
-        messages=mensagens,
-        temperature=temperatura,
-        stream=stream
-    )
-    return response
+def retorna_resposta_modelo(mensagens, api_key, modelo='gpt-4', stream=False):
+    openai.api_key = api_key
+    try:
+        response = openai.ChatCompletion.create(
+            model=modelo,
+            messages=mensagens,
+            stream=stream
+        )
+        return response
+    except Exception as e:
+        print(f"Erro ao chamar a API do OpenAI: {e}")
+        raise e
