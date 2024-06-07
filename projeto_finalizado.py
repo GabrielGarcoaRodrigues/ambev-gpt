@@ -95,7 +95,7 @@ def pagina_principal():
         if uploaded_file is not None:
             # Lê o conteúdo do arquivo
             file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type}
-            st.write(file_details)
+            # st.write(file_details)
             
             try:
                 # Converte o arquivo Excel em um DataFrame
