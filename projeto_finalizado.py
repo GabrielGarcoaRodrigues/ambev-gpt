@@ -1,9 +1,17 @@
 import streamlit as st
 import pandas as pd
 import openpyxl
+from dotenv import load_dotenv
+import os
 
 from utils_openai import retorna_resposta_modelo
 from utils_files import *
+
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv()
+
+# Obter a chave da API da variável de ambiente
+API_KEY = os.getenv('OPENAI_API_KEY')
 
 # INICIALIZAÇÃO ==================================================
 def inicializacao():
@@ -14,7 +22,7 @@ def inicializacao():
     if not 'modelo' in st.session_state:
         st.session_state.modelo = 'gpt-4'
     if not 'api_key' in st.session_state:
-        st.session_state.api_key = le_chave()
+        st.session_state.api_key = API_KEY
 
 # TABS ==================================================
 def tab_conversas(tab):
@@ -43,10 +51,7 @@ def seleciona_conversa(nome_arquivo):
     st.session_state['conversa_atual'] = nome_arquivo
 
 def tab_configuracoes(tab):
-    modelo_escolhido = tab.selectbox('Selecione o modelo',
-                                     ['gpt-4', 'gpt-3.5-turbo'])
-    st.session_state['modelo'] = modelo_escolhido
-    # st.session_state['modelo'] = 'gpt-4'
+    st.session_state['modelo'] = 'gpt-4'
 
     chave = tab.text_input('Adicione sua api key', value=st.session_state['api_key'], type="password")
     if chave != st.session_state['api_key']:
