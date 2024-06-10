@@ -15,6 +15,8 @@ API_KEY = st.secrets.get("API_KEY", None)
 if API_KEY is None:
     st.error("A chave da API não foi encontrada em st.secrets. Verifique se foi adicionada corretamente.")
 
+# Configurar a chave da API para o módulo openai
+openai.api_key = API_KEY
 
 # INICIALIZAÇÃO ==================================================
 def inicializacao():
