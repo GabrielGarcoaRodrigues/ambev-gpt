@@ -30,9 +30,9 @@ def tab_conversas():
                       use_container_width=True)
     st.sidebar.markdown('')
     conversas = listar_conversas()
-    for nome_arquivo em conversas:
+    for nome_arquivo in conversas:
         nome_mensagem = desconverte_nome_mensagem(nome_arquivo).capitalize()
-        if len nome_mensagem == 30:
+        if len(nome_mensagem) == 30:
             nome_mensagem += '...'
         st.sidebar.button(nome_mensagem,
                           on_click=seleciona_conversa,
