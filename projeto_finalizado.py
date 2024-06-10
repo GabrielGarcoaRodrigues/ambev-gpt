@@ -6,6 +6,10 @@ import openpyxl
 from utils_openai import retorna_resposta_modelo
 from utils_files import *
 
+# Debug: Mostrar o conteúdo de st.secrets
+st.write(st.secrets)
+
+# Obter a chave da API da variável de ambiente
 API_KEY = st.secrets.get("API_KEY", "CHAVE_NAO_ENCONTRADA")
 
 if API_KEY == "CHAVE_NAO_ENCONTRADA":
