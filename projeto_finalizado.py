@@ -56,7 +56,7 @@ def tab_configuracoes(tab):
     chave = tab.text_input('Adicione sua api key', value=st.session_state['api_key'], type="password")
     #chave = API_KEY
     #st.session_state['api_key'] = API_KEY
-     if chave != st.session_state['api_key']:
+    if chave != st.session_state['api_key']:
          st.session_state['api_key'] = chave
          salva_chave(chave)
          tab.success('Chave salva com sucesso')
