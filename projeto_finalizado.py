@@ -6,6 +6,7 @@ import openpyxl
 from utils_openai import retorna_resposta_modelo
 from utils_files import *
 
+API_KEY = st.secrets["API_KEY"]
 
 
 # INICIALIZAÇÃO ==================================================
