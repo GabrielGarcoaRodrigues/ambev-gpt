@@ -7,12 +7,12 @@ from utils_openai import retorna_resposta_modelo
 from utils_files import *
 
 # Debug: Mostrar o conteúdo de st.secrets
-st.write(st.secrets)
+st.write("Segredos carregados:", st.secrets)
 
 # Obter a chave da API da variável de ambiente
-API_KEY = st.secrets.get("API_KEY", "CHAVE_NAO_ENCONTRADA")
+API_KEY = st.secrets.get("API_KEY", None)
 
-if API_KEY == "CHAVE_NAO_ENCONTRADA":
+if API_KEY is None:
     st.error("A chave da API não foi encontrada em st.secrets. Verifique se foi adicionada corretamente.")
 
 
