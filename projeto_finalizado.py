@@ -128,7 +128,7 @@ def main():
     pagina_principal()
     tab1 = st.sidebar.tabs(['Conversas'])
     tab_conversas(tab1)
-    tab_configuracoes(tab2)
+    # tab_configuracoes(tab2)
     
 if __name__ == '__main__':
     main()
