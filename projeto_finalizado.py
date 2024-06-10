@@ -2,11 +2,14 @@ import streamlit as st
 import pandas as pd
 import openpyxl
 import openai
+import os
 
 
 from utils_openai import retorna_resposta_modelo
 from utils_files import *
 
+# Everything is accessible via the st.secrets dict:
+st.write("API_KEY:", st.secrets["API_KEY"])
 
 
 # INICIALIZAÇÃO ==================================================
