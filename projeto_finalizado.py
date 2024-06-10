@@ -48,18 +48,18 @@ def seleciona_conversa(nome_arquivo):
         st.session_state['mensagens'] = mensagem
     st.session_state['conversa_atual'] = nome_arquivo
 
-def tab_configuracoes(tab):
-    st.session_state['modelo'] = 'gpt-4'
-    # tab.write('Modelo selecionado: GPT-4')	
-    tab.selectbox('Selecione o modelo', ['gpt-4'])
+# def tab_configuracoes(tab):
+#     st.session_state['modelo'] = 'gpt-4'
+#     # tab.write('Modelo selecionado: GPT-4')	
+#     tab.selectbox('Selecione o modelo', ['gpt-4'])
 
-    # chave = tab.text_input('Adicione sua api key', value=st.session_state['api_key'], type="password")
-    chave = st.secrets["API_KEY"]
-    # st.session_state['api_key'] = API_KEY
-    if chave != st.session_state['api_key']:
-         st.session_state['api_key'] = chave
-         salva_chave(chave)
-         tab.success('Chave salva com sucesso')
+#     # chave = tab.text_input('Adicione sua api key', value=st.session_state['api_key'], type="password")
+#     chave = st.secrets["API_KEY"]
+#     # st.session_state['api_key'] = API_KEY
+#     if chave != st.session_state['api_key']:
+#          st.session_state['api_key'] = chave
+#          salva_chave(chave)
+#          tab.success('Chave salva com sucesso')
 
 # PÁGINA PRINCIPAL ==================================================
 def pagina_principal():
@@ -135,9 +135,9 @@ def pagina_principal():
 def main():
     inicializacao()
     pagina_principal()
-    tab1, tab2 = st.sidebar.tabs(['Conversas', 'Configurações'])
+    tab1 = st.sidebar.tabs(['Conversas'])
     tab_conversas(tab1)
-    tab_configuracoes(tab2)
+    # tab_configuracoes(tab2)
     
 if __name__ == '__main__':
     main()
