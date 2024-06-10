@@ -50,8 +50,8 @@ def seleciona_conversa(nome_arquivo):
 
 def tab_configuracoes(tab):
     st.session_state['modelo'] = 'gpt-4'
-    st.write('Modelo selecionado:', st.session_state['modelo'])
-
+    tab.selectbox('Selecione o modelo', ['gpt-4', 'davinci'], index=0)
+    
     # chave = tab.text_input('Adicione sua api key', value=st.session_state['api_key'], type="password")
     chave = st.secrets["API_KEY"]
     # st.session_state['api_key'] = API_KEY
