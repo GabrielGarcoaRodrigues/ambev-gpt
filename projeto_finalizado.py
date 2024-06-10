@@ -6,7 +6,10 @@ import openpyxl
 from utils_openai import retorna_resposta_modelo
 from utils_files import *
 
-API_KEY = st.secrets["API_KEY"]
+API_KEY = st.secrets.get("API_KEY", "CHAVE_NAO_ENCONTRADA")
+
+if API_KEY == "CHAVE_NAO_ENCONTRADA":
+    st.error("A chave da API não foi encontrada em st.secrets. Verifique se foi adicionada corretamente.")
 
 
 # INICIALIZAÇÃO ==================================================
