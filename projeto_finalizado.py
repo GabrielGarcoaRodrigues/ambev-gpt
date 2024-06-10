@@ -24,6 +24,9 @@ def inicializacao():
     if not 'api_key' in st.session_state:
         st.session_state.api_key = API_KEY
 
+def clear_cache():
+    st.cache_data.clear()
+    st.success("Cache limpo com sucesso!")
 # TABS ==================================================
 def tab_conversas(tab):
     tab.button('➕ Nova conversa',
