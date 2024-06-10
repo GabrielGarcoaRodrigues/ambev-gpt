@@ -24,9 +24,6 @@ def inicializacao():
     if not 'api_key' in st.session_state:
         st.session_state.api_key = API_KEY
 
-def clear_cache():
-    st.cache_data.clear()
-    st.success("Cache limpo com sucesso!")
 # TABS ==================================================
 def tab_conversas(tab):
     tab.button('➕ Nova conversa',
@@ -132,9 +129,7 @@ def pagina_principal():
     #             salvar_mensagens(mensagens)
     #         except Exception as e:
     #             st.error(f"Erro ao processar o arquivo: {e}")
-   # Botão para limpar o cache
-    if st.button("Limpar Cache"):
-        clear_cache()
+ 
 
 # MAIN ==================================================
 def main():
