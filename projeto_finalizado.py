@@ -129,6 +129,9 @@ def pagina_principal():
     #             salvar_mensagens(mensagens)
     #         except Exception as e:
     #             st.error(f"Erro ao processar o arquivo: {e}")
+   # Botão para limpar o cache
+    if st.button("Limpar Cache"):
+        clear_cache()
 
 # MAIN ==================================================
 def main():
