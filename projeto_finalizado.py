@@ -1,17 +1,12 @@
 import streamlit as st
 import pandas as pd
 import openpyxl
-from dotenv import load_dotenv
-import os
+
 
 from utils_openai import retorna_resposta_modelo
 from utils_files import *
 
-# Carregar variáveis de ambiente do arquivo .env
-load_dotenv()
 
-# Obter a chave da API da variável de ambiente
-API_KEY = os.getenv('OPENAI_API_KEY')
 
 # INICIALIZAÇÃO ==================================================
 def inicializacao():
