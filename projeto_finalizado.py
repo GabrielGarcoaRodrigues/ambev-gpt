@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import openpyxl
+import openai
 
 
 from utils_openai import retorna_resposta_modelo
