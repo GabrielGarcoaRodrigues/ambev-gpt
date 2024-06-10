@@ -28,7 +28,7 @@ def tab_conversas(tab):
                on_click=seleciona_conversa,
                args=('', ),
                use_container_width=True)
-    tab.markdown('')
+    tab.markdown('') 
     conversas = listar_conversas()
     for nome_arquivo in conversas:
         nome_mensagem = desconverte_nome_mensagem(nome_arquivo).capitalize()
