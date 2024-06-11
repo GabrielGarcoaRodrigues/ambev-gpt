@@ -20,7 +20,7 @@ def inicializacao():
     if not 'modelo' in st.session_state:
         st.session_state.modelo = 'gpt-4'
     if not 'api_key' in st.session_state:
-        st.session_state.api_key = le_chave()
+        st.session_state.api_key = st.secrets["API_KEY"]
 
 # TABS ==================================================
 def tab_conversas():
