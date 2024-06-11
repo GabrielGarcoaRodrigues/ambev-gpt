@@ -8,7 +8,7 @@ import os
 from utils_openai import retorna_resposta_modelo
 from utils_files import *
 
-st.write("API_KEY:", st.secrets["API_KEY"])
+# st.write("API_KEY:", st.secrets["API_KEY"])
 
 # INICIALIZAÇÃO ==================================================
 def inicializacao():
