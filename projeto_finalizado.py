@@ -9,7 +9,6 @@ from utils_openai import retorna_resposta_modelo
 from utils_files import *
 
 st.write("API_KEY:", st.secrets["API_KEY"])
-chave = st.secrets["API_KEY"]
 
 # INICIALIZAÇÃO ==================================================
 def inicializacao():
@@ -22,6 +21,13 @@ def inicializacao():
     if not 'api_key' in st.session_state:
         st.session_state.api_key = st.secrets["API_KEY"]
 
+
+    chave = st.secrets["API_KEY"]
+    # st.session_state['api_key'] = API_KEY
+    if chave != st.session_state['api_key']:
+         st.session_state['api_key'] = chave
+         salva_chave(chave)
+         tab.success('Chave salva com sucesso')
 # TABS ==================================================
 def tab_conversas():
     st.sidebar.button('➕ Nova conversa',
