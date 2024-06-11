@@ -17,7 +17,7 @@ def inicializacao():
     if not 'conversa_atual' in st.session_state:
         st.session_state.conversa_atual = ''
     if not 'modelo' in st.session_state:
-        st.session_state.modelo = 'gpt-4'
+        st.session_state.modelo = 'text-embedding-3-large'
     if not 'api_key' in st.session_state:
         st.session_state.api_key = st.secrets["API_KEY"]
 
