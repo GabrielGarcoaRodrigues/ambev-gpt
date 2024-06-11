@@ -27,7 +27,7 @@ def inicializacao():
     if chave != st.session_state['api_key']:
          st.session_state['api_key'] = chave
          salva_chave(chave)
-         tab.success('Chave salva com sucesso')
+         st.sidebar.success('Chave salva com sucesso')
 # TABS ==================================================
 def tab_conversas():
     st.sidebar.button('➕ Nova conversa',
