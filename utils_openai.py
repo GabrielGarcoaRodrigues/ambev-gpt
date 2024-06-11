@@ -1,6 +1,6 @@
 import openai
 
-def retorna_resposta_modelo(mensagens, api_key, modelo='text-embedding-3-large', stream=False):
+def retorna_resposta_modelo(mensagens, api_key, modelo='gpt-4o', stream=False):
     openai.api_key = api_key
     try:
         response = openai.ChatCompletion.create(
