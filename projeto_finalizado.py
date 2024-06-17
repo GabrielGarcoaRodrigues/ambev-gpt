@@ -69,6 +69,8 @@ def seleciona_conversa(nome_arquivo):
 
 # PÁGINA PRINCIPAL ==================================================
 def pagina_principal():
+    st.set_page_config(page_title="Orbit AI", layout='centered')
+
     mensagens = ler_mensagens(st.session_state['mensagens'])
 
     st.header('🍺 Ambev Chatbot', divider=True)
